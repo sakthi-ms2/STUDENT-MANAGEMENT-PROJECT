@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Management System</title>
+    <meta name="description" content="A modern student performance and record management system built with Python Flask.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🎓</span>
+                    <div class="logo-text">
+                        <h1>StudentPro</h1>
+                        <span>Management System</span>
+                    </div>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+                <a class="nav-item" data-view="students" onclick="switchView('students')">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Students</span>
+                </a>
+                <a class="nav-item" data-view="add-student" onclick="switchView('add-student')">
+                    <span class="nav-icon">➕</span>
+                    <span class="nav-label">Add Student</span>
+                </a>
+                <a class="nav-item" data-view="analytics" onclick="switchView('analytics')">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-label">Analytics</span>
+                </a>
+                <a class="nav-item" data-view="numpy" onclick="switchView('numpy')">
+                    <span class="nav-icon">🔢</span>
+                    <span class="nav-label">NumPy Stats</span>
+                </a>
+                <a class="nav-item" data-view="pandas" onclick="switchView('pandas')">
+                    <span class="nav-icon">🐼</span>
+                    <span class="nav-label">Pandas View</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <span>Python Lab Project</span>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <button class="menu-toggle" onclick="toggleSidebar()" id="menuToggle">☰</button>
+                <div class="topbar-search">
+                    <input type="text" id="globalSearch" placeholder="Search students by name or ID..." onkeyup="handleGlobalSearch(event)">
+                </div>
+                <div class="topbar-actions">
+                    <span class="status-badge" id="statusBadge">● Connected</span>
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <section class="view active" id="view-dashboard">
+                <div class="view-header">
+                    <h2>Dashboard</h2>
+                    <p>Overview of student performance and class statistics</p>
+                </div>
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Stats cards populated by JS -->
+                </div>
+                <div class="dashboard-grid">
+                    <div class="card" id="gradeDistCard">
+                        <h3>Grade Distribution</h3>
+                        <div class="chart-container" id="gradeChart"></div>
+                    </div>
+                    <div class="card" id="topStudentsCard">
+                        <h3>Top Performers</h3>
+                        <div id="topStudentsList"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Students View -->
+            <section class="view" id="view-students">
+                <div class="view-header">
+                    <h2>All Students</h2>
+                    <p>Manage and view student records</p>
+                </div>
+                <div class="table-controls">
+                    <input type="text" id="studentSearch" placeholder="Filter students..." oninput="filterStudents()">
+                    <button class="btn btn-primary" onclick="switchView('add-student')">+ Add New</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table" id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Year</th>
+                                <th>Total</th>
+                                <th>Average</th>
+                                <th>Grade</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Add Student View -->
+            <section class="view" id="view-add-student">
+                <div class="view-header">
+                    <h2 id="formTitle">Add New Student</h2>
+                    <p id="formSubtitle">Enter student details and marks</p>
+                </div>
+                <form class="student-form" id="studentForm" onsubmit="handleFormSubmit(event)">
+                    <input type="hidden" id="editMode" value="add">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="studentId">Student ID *</label>
+                            <input type="text" id="studentId" placeholder="e.g., STU007" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentName">Full Name *</label>
+                            <input type="text" id="studentName" placeholder="e.g., John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentAge">Age *</label>
+                            <input type="number" id="studentAge" placeholder="15-60" min="15" max="60" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentDept">Department *</label>
+                            <select id="studentDept" required>
+                                <option value="">Select Department</option>
+                                <option value="CSE">CSE - Computer Science</option>
+                                <option value="ECE">ECE - Electronics</option>
+                                <option value="ME">ME - Mechanical</option>
+                                <option value="CE">CE - Civil</option>
+                                <option value="EE">EE - Electrical</option>
+                                <option value="IT">IT - Information Tech</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentYear">Year *</label>
+                            <select id="studentYear" required>
+                                <option value="">Select Year</option>
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                            </select>
+                        </div>
+                    </div>
+                    <h3 class="marks-title">Subject Marks (0-100)</h3>
+                    <div class="marks-grid">
+                        <div class="form-group">
+                            <label for="markMath">Mathematics *</label>
+                            <input type="number" id="markMath" placeholder="0-100" min="0" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="markPhysics">Physics *</label>
+                            <input type="number" id="markPhysics" placeholder="0-100" min="0" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="markChemistry">Chemistry *</label>
+                            <input type="number" id="markChemistry" placeholder="0-100" min="0" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="markEnglish">English *</label>
+                            <input type="number" id="markEnglish" placeholder="0-100" min="0" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="markCS">Computer Science *</label>
+                            <input type="number" id="markCS" placeholder="0-100" min="0" max="100" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Add Student</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Analytics View -->
+            <section class="view" id="view-analytics">
+                <div class="view-header">
+                    <h2>Analytics</h2>
+                    <p>Subject and department performance analysis</p>
+                </div>
+                <div class="analytics-grid" id="analyticsContent">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- NumPy View -->
+            <section class="view" id="view-numpy">
+                <div class="view-header">
+                    <h2>NumPy Analysis</h2>
+                    <p>Numerical analysis using Python NumPy arrays</p>
+                </div>
+                <div id="numpyContent">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- Pandas View -->
+            <section class="view" id="view-pandas">
+                <div class="view-header">
+                    <h2>Pandas DataFrame</h2>
+                    <p>Tabular analysis using Python Pandas</p>
+                </div>
+                <div id="pandasContent">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal for Student Details -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="modalTitle">Student Details</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/static/app.js" defer></script>
+</body>
+</html>
