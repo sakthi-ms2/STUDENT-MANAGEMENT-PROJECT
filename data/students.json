@@ -82,5 +82,33 @@
       80,
       70
     ]
+  },
+  {
+    "student_id": "711625AM136",
+    "name": "UNIVERSE",
+    "age": 19,
+    "department": "CSE",
+    "year": 2,
+    "marks": [
+      77,
+      67,
+      70,
+      75,
+      76
+    ]
+  },
+  {
+    "student_id": "711625AM135",
+    "name": "NIDHUL",
+    "age": 18,
+    "department": "CSE",
+    "year": 2,
+    "marks": [
+      70,
+      75,
+      60,
+      80,
+      80
+    ]
   }
 ]
